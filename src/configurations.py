@@ -116,7 +116,7 @@ do_transform_design = True
 
 #if this switch is turned on, the emulator will be trained on log(1 + dY_dx)
 #where dY_dx includes dET_deta, dNch_deta, dN_dy_pion, etc...
-transform_multiplicities = False
+transform_multiplicities = True
 
 #do we want bayes_dtype to include the observables that we don't use for calibration ?
 bayes_dtype = [    (s,
@@ -133,8 +133,7 @@ active_obs_list = {
    sys: list(obs_cent_list[sys].keys()) for sys in system_strs
 }
 
-#try exluding PHENIX dN dy proton from fit
-
+#try exluding PHENIX proton from fit
 if system_strs[0] == 'Au-Au-200':
     active_obs_list['Au-Au-200'].remove('dN_dy_proton')
     active_obs_list['Au-Au-200'].remove('mean_pT_proton')

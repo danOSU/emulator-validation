@@ -16,6 +16,7 @@ for i in {0..26}; do
 
   mkdir mcmc
   mkdir closure_plots
+  mkdir validation_plots
   mkdir plots
   mkdir closure_truth_dob
   mkdir validate_eta_zeta

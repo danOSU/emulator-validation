@@ -205,7 +205,7 @@ class Chain:
                  for s in system_strs
                }
 
-    def log_posterior(self, X, extra_std_prior_scale=0.05):
+    def log_posterior(self, X, extra_std_prior_scale=0.005):
         """
         Evaluate the posterior at `X`.
 
@@ -226,7 +226,7 @@ class Chain:
 
         #TEMPORARY
         #turn off model systematic uncertainty
-        extra_std = 0.
+        #extra_std = 0.
 
         nsamples = np.count_nonzero(inside)
         if nsamples > 0:
@@ -253,8 +253,8 @@ class Chain:
                 # compute log likelihood at each point
                 lp[inside] += list(map(mvn_loglike, dY, cov))
 
-            # add prior for extra_std (model sys error)
-            #lp[inside] += 2*np.log(extra_std) - extra_std/extra_std_prior_scale
+             #add prior for extra_std (model sys error)
+            lp[inside] += 2*np.log(extra_std) - extra_std/extra_std_prior_scale
 
 
         return lp

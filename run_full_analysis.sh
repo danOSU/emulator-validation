@@ -10,7 +10,6 @@ rm mcmc/chain.hdf
 #perform MCMC
 ./src/bayes_mcmc.py 4000 --nwalkers 100 --nburnsteps 500
 
-
 ./src/bayes_plot.py plots/diag_pca.png # PCA Diagnostic, check uncorrelated
 ./src/bayes_plot.py plots/diag_emu.png # PCA Diagnostic, check how PCs respond to parameter changes
 ./src/bayes_plot.py plots/obs_prior.png # The prior against expt data
