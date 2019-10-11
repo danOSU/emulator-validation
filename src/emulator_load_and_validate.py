@@ -4,10 +4,12 @@ import dill
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+from string import ascii_letters
 
 from configurations import *
 from emulator import *
 from calculations_load import validation_data, trimmed_model_data
+from bayes_mcmc import Chain, credible_interval
 
 def plot_residuals(system_str, emu, design, cent_bin, observables, nrows, ncols):
     """
@@ -17,7 +19,7 @@ def plot_residuals(system_str, emu, design, cent_bin, observables, nrows, ncols)
 
     print("Plotting emulator residuals")
 
-    fig, axes = plt.subplots(figsize=(10,8), ncols=ncols, nrows=nrows)
+    fig, axes = plt.subplots(figsize=(10,10), ncols=ncols, nrows=nrows)
     for obs, ax in zip(observables, axes.flatten()):
         Y_true = []
         Y_emu = []
@@ -206,6 +208,76 @@ def plot_model_stat_uncertainty(system_str, design, cent_bin, observables, nrows
     plt.tight_layout(True)
     plt.savefig('validation_plots/model_stat_errors.png')
 
+def closure_test_credibility_intervals(system_str, design):
+    chain = Chain()
+
+    #get VALIDATION points
+    keys = chain.keys
+    allowed = set(ascii_letters)
+
+    data = chain.load().T
+    truths = list(design.values[validation_pt])+[0.0]
+    for x, xkey, truth in zip(data, keys, truths):
+        #write the truths and credibility intervals to file
+        new_key = ''.join(l for l in xkey if l in allowed)
+        new_key = new_key.replace('GeV', '')
+        new_key = new_key.replace('TeV', '')
+        new_key = new_key.replace('fm', '')
+        new_key = new_key.replace('mathrm', '')
+        cred = np.percentile(x, [10, 30, 50, 70, 90], axis=0)
+        cred_string = ''
+        for val in cred:
+            cred_string += (str(val) + "\t")
+        with open("closure_truth_dob/" + new_key + ".dat", "a+") as myfile:
+            myfile.write( str(truth) + "\t" + cred_string )
+
+def closure_test_credibility_eta_zeta(system_str, design):
+    chain = Chain()
+
+    #get VALIDATION points
+    keys = chain.keys
+
+    data = chain.load().T[:-1]
+    #print("########### data.shape = ")
+    #print(data.shape)
+    ndims, nsamples = data.shape
+    truths = list(design.values[validation_pt])
+    Ti = [.155, .175, .2, .25, .35]
+
+    with open("validate_eta_zeta/{:d}-etas.dat".format(validation_pt),'w') as f:
+        # transform design into eta/s(T_i) and zeta/s(T_i)
+        f.write("#T\ttruth\tmedian\tlow5\tlow20\thigh80\thigh95\n")
+        for T in Ti:
+            samples = eta_over_s(T, data[7,:], data[8,:], data[9,:], data[10,:])
+            true_eta_over_s = eta_over_s(T, truths[7], truths[8], truths[9], truths[10])
+            median = np.median(samples)
+            l5 = np.quantile(samples, .05)
+            l20 = np.quantile(samples, .2)
+            h80 = np.quantile(samples, .8)
+            h95 = np.quantile(samples, .95)
+            f.write("{:1.6f}\t{:1.6f}\t{:1.6f}\t{:1.6f}\t{:1.6f}\t{:1.6f}\t{:1.6f}\n".format(
+                     T, true_eta_over_s, median, l5, l20, h80, h95
+                     )
+                   )
+
+    with open("validate_eta_zeta/{:d}-zetas.dat".format(validation_pt),'w') as f:
+        # transform design into eta/s(T_i) and zeta/s(T_i)
+        # Ti is chose, e.g, to be
+        f.write("#T\ttruth\tmedian\tlow5\tlow20\thigh80\thigh95\n")
+        for T in Ti:
+            samples = zeta_over_s(T, data[11, :], data[12, :], data[13, :], data[14, :])
+            true_zeta_over_s = zeta_over_s(T, truths[11], truths[12], truths[13], truths[14])
+            median = np.median(samples)
+            l5 = np.quantile(samples, .05)
+            l20 = np.quantile(samples, .2)
+            h80 = np.quantile(samples, .8)
+            h95 = np.quantile(samples, .95)
+
+            f.write("{:1.6f}\t{:1.6f}\t{:1.6f}\t{:1.6f}\t{:1.6f}\t{:1.6f}\t{:1.6f}\n".format(
+                     T, true_zeta_over_s, median, l5, l20, h80, h95
+                     )
+                   )
+
 def main():
 
     cent_bin = 3
@@ -217,8 +289,8 @@ def main():
         for obs, cent_list in obs_cent_list[system_str].items():
             observables.append(obs)
 
-        nrows = 3
-        ncols = 3
+        nrows = 4
+        ncols = 4
 
         if pseudovalidation:
             #using training points as testing points
@@ -235,13 +307,22 @@ def main():
         print("idf = " + str(idf))
 
         #make a plot of the residuals ; percent difference between emulator and model
-        plot_residuals(system_str, emu, design, cent_bin, observables, nrows, ncols)
+        #plot_residuals(system_str, emu, design, cent_bin, observables, nrows, ncols)
+
         #make a scatter plot to check if residuals between different observables are correlated
-        plot_residuals_corr(system_str, emu, design, cent_bin, observables)
+        #plot_residuals_corr(system_str, emu, design, cent_bin, observables)
+
         #make a scatter plot of emulator prediction vs model prediction
-        plot_scatter(system_str, emu, design, cent_bin, observables, nrows, ncols)
+        #plot_scatter(system_str, emu, design, cent_bin, observables, nrows, ncols)
+
         #make a histogram to check the model statistical uncertainty
-        plot_model_stat_uncertainty(system_str, design, cent_bin, observables, nrows, ncols)
+        #plot_model_stat_uncertainty(system_str, design, cent_bin, observables, nrows, ncols)
+
+        #check if truth falls within credibility intervals
+        closure_test_credibility_intervals(system_str, design)
+
+        #check if eta/s , zeta/s at specified temperatures fall within dob intervals
+        closure_test_credibility_eta_zeta(system_str, design)
 
 
 if __name__ == "__main__":
