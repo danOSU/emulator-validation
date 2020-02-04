@@ -64,7 +64,7 @@ print("Using idf = " + str(idf) + " : " + idf_label[idf])
 #the Collision systems
 systems = [
         ('Pb', 'Pb', 2760),
-        ('Au', 'Au', 200),
+        # ('Au', 'Au', 200),
         #('Pb', 'Pb', 5020),
         #('Xe', 'Xe', 5440)
         ]
@@ -190,8 +190,9 @@ change_exp_error_vals = {
                         'Au-Au-200': {},
 
                         'Pb-Pb-2760' : {
-                                        'dN_dy_proton' : 1.e-1,
-                                        'mean_pT_proton' : 1.e-1
+                                        #'dN_dy_pion' : 5.e-1
+                                        'v32' : 5.e-1
+                                        #'mean_pT_pion' : 5.e-1 
                                         }
 
 }
