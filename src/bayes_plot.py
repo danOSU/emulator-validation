@@ -2285,10 +2285,10 @@ def _posterior():
     #indices = [0, 1, 2, 3, 4, 6, 7, 17]
     indices = [8, 9, 10, 11, 16]
 
-    chain0 = Chain(path=workdir/'mcmc'/'chain-idf-0_LHC_RHIC_long_chain.hdf')
+    chain0 = Chain(path=workdir/'mcmc'/'sensitivity'/'chain_base_2-idf-0.hdf')
     data0 = chain0.load().T
 
-    chain1 = Chain(path=workdir/'mcmc'/'chain-idf-1_LHC_RHIC_long_chain.hdf')
+    chain1 = Chain(path=workdir/'mcmc'/'sensitivity'/'chain_base_3-idf-0.hdf')
     data1 = chain1.load().T
 
     data0 = np.take(data0, indices, axis=0)
