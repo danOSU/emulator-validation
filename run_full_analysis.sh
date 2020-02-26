@@ -4,10 +4,10 @@ echo "Check if the mcmc/<chain-name>.hdf is the one you want to append the chain
 #./src/calculations_average_obs.py
 
 #train the emulator
-./src/emulator.py --retrain --nrestarts 4
+#./src/emulator.py --retrain --nrestarts 4
 
 #perform MCMC
-./src/bayes_mcmc.py 4000 --nwalkers 100 --nburnsteps 500
+#./src/bayes_mcmc.py 4000 --nwalkers 100 --nburnsteps 500
 
 
 ./src/bayes_plot.py plots/diag_pca.png # PCA Diagnostic, check uncorrelated

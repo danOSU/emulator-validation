@@ -14,8 +14,8 @@ and `Gaussian process regression
 <http://scikit-learn.org/stable/modules/generated/sklearn.gaussian_process.GaussianProcessRegressor.html>`_.
 """
 
-import logging
 import pickle
+import logging
 import dill
 
 import numpy as np

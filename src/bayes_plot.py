@@ -47,6 +47,8 @@ from calculations_load import trimmed_model_data, MAP_data
 from bayes_exp import Y_exp_data
 from design import Design
 
+from compare_events import *
+
 fontsize = dict(
     large=11,
     normal=10,
@@ -805,8 +807,6 @@ def observables_fit_model_calc_compare():
     experimental data points.
 
     """
-
-    #from compare_events import *
 
     print("Plotting observables calculated at 2 param sets by hybrid model")
 
