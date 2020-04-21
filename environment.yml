@@ -1,4 +1,4 @@
-name: emulator-validation
+name: sensitivity
 channels:
 - conda-forge
 dependencies:
@@ -12,19 +12,19 @@ dependencies:
 - jupyter
 - ipywidgets
 - nbdime
-- emcee=2.2.1
-- ptemcee
+- emcee
 - corner
 - mkl-service
 - jupyter_nbextensions_configurator
 - scikit-learn
 - scikit-image
 - rise
+- dill
+- PyYAML
 - pip
 - pip:
   - gpy
-  - gpyopt  
+  - gpyopt
   - pymultinest
-  - pymc3==3.6
+  - pymc3
   - arviz
-  - dill

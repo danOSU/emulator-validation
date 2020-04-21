@@ -132,31 +132,26 @@ class LoggingEnsembleSampler(emcee.EnsembleSampler):
 
         return result
 
-class LoggingPTSampler(emcee.PTSampler):
-    def run_mcmc(self, X0, nsteps, status=None, **kwargs):
-        """
-        Run MCMC with logging every 'status' steps.
-
-        """
-
-        print('running {:d} walkers for {:d} steps'.format(self.k, nsteps))
-
-
-        if status is None:
-            status = nsteps // 10
-
-
-        for n, result in enumerate( self.sample(X0, iterations=nsteps, **kwargs), start=1 ):
-            if n % status == 0 or n == nsteps:
-                af = self.acceptance_fraction
-                print(
-                    'step {:d}: acceptance fraction: '
-                    'mean {:.4f}, std {:.4f}, min {:.4f}, max {:.4f}'.format(
-                    n, af.mean(), af.std(), af.min(), af.max()
-                    )
-                    )
-
-        return result
+#class LoggingPTSampler(emcee.PTSampler):
+#    def run_mcmc(self, X0, nsteps, status=None, **kwargs):
+#        """
+#        Run MCMC with logging every 'status' steps.
+#
+#        """
+##        print('running {:d} walkers for {:d} steps'.format(self.k, nsteps))
+#
+###            status = nsteps // 10
+#
+#
+#        for n, result in enumerate( self.sample(X0, iterations=nsteps, **kwargs), start=1 ):
+#            if n % status == 0 or n == nsteps:
+#                af = self.acceptance_fraction
+###                    'mean {:.4f}, std {:.4f}, min {:.4f}, max {:.4f}'.format(
+#                    n, af.mean(), af.std(), af.min(), af.max()
+#                    )
+#                    )
+#
+#        return result
 
 
 def compute_cov(system, obs1, obs2, dy1, dy2):

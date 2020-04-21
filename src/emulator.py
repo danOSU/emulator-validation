@@ -27,6 +27,7 @@ from sklearn.gaussian_process import GaussianProcessRegressor as GPR
 from sklearn.gaussian_process import kernels
 from sklearn.preprocessing import StandardScaler
 
+
 from configurations import *
 from calculations_load import trimmed_model_data
 
@@ -219,6 +220,31 @@ class Emulator:
         # Y shape (..., nobs)
         Y = np.dot(Z, self._trans_matrix[:Z.shape[-1]])
         Y += self.scaler.mean_
+
+        """
+        return {
+            obs: {
+                subobs: Y[..., s]
+                for subobs, s in slices.items()
+            } for obs, slices in self._slices.items()
+        }
+        """
+
+        return {
+            obs: Y[..., s] for obs, s in self._slices.items()
+        }
+
+    def _inverse_transformm(self, Z):
+        """
+        Inverse transform principal components to observables.
+
+        Returns a nested dict of arrays.
+
+        """
+        # Z shape (..., npc)
+        # Y shape (..., nobs)
+        Y = np.dot(Z, self._trans_matrix[:Z.shape[-1]])
+        #Y += self.scaler.mean_
 
         """
         return {
